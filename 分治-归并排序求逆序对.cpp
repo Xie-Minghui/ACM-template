@@ -25,7 +25,7 @@ void merge(int l,int mid,int r){
 		if(L[i] <= R[j]){
 			A[k] = L[i++];
 		}else{
-			ans++;//¹é²¢ÅÅĞòÇóÄæĞò¶Ô 
+			ans += (n1-i);//æ±‚é€†åºå¯¹ï¼Œå› ä¸ºL[i,n1) > R[j],è¿™äº›æ„æˆé€†åºå¯¹
 			A[k] = R[j++];
 		}
 	}
@@ -51,7 +51,6 @@ int main(){
 	
 	merge_sort(0,size);
 	cout << ans << endl;
-	cout << "\n";
 	}
 	return 0;
 }
