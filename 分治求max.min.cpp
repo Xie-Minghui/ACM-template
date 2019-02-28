@@ -1,36 +1,33 @@
-#include<iostream>
-#include<cstdio>
-#include<algorithm>
+/*
+编写程序，在数组中同时查找最大值和最小值，用递归程序实现
+*/
+#include<bits/stdc++.h>
+#define INF 0x3f3f3f3f
 using namespace std;
-void Maxmin(int *A,int l,int r,int &Max,int &Min)
-{
-	int x1,x2,y1,y2;
-	int m;
-	if(r - l <= 1){
-		Min = min(A[l],A[r]);
-		Max = max(A[l],A[r]);
+void Find_max_min(int* a,int l,int r,int& ma,int& mi){//interval is [l,r) 
+	if(r - l == 1){
+		ma = max(ma,a[l]);
+		mi = min(mi,a[l]);
+		return ;
 	}
-	else {
-		m = (r - l)/2 + l;
-		Maxmin(A,l,m,x1,y1);
-		Maxmin(A,m,r,x2,y2);
-		Max = max(x1,x2);
-		//max = x1 >x2?x1:x2;
-		Min = min(y1,y2);
-	}
-	
+	int mid = l + (r-l)/2;
+	Find_max_min(a,l,mid,ma,mi);
+	Find_max_min(a,mid,r,ma,mi);
 }
-int main()
-{
-	freopen("maxmin.txt","r",stdin);
-	int A[10];
-	int max = 0,min = 0;
-	for(int i = 0;i < 10;i++){
-		scanf("%d",&A[i]);
+int main(){
+	int n = 0;
+	while(~scanf("%d",&n)){	
+		if(n == 0){//handle exception 
+			puts("Please input a valid n !!!");
+			continue;
+		}
+		int* A = new int[n+1];
+		for(int i = 1;i <= n;++i){
+			scanf("%d",&A[i]);
+		}
+		int maxv = -INF,minv = INF;
+		Find_max_min(A,1,n+1,maxv,minv);
+		printf("max: %d , min:%d\n",maxv,minv);
 	}
-	Maxmin(A,0,9,max,min);
-	printf("%d %d\n",max,min);
-	
-	
 	return 0;
- } 
+} 
