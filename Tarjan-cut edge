@@ -6,6 +6,10 @@ vector<int> g[maxn+10];
 bool vis[maxn+10];
 int low[maxn+10],dfn[maxn+10];
 int cnt = 0,dig = 0;
+/*
+dfn[i]:节点 i dfs的次序
+low[i]: 节点 i 所在环中 所有节点中最小的 dfn[i]。
+*/
 //这里是tarjan代码模板核心
 void tarjan(int u,int w){
 	vis[u] = true;
