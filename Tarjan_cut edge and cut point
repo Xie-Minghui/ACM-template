@@ -1,0 +1,73 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int maxn = 2e5;
+int n = 0,m = 0;
+vector<int> g[maxn+10];
+int fa[maxn+10];
+int dfn[maxn+10],low[maxn+10];
+bool is_cut[maxn+10];
+int tim = 0;
+void init(){
+	tim = 0;
+	memset(dfn,-1,sizeof(dfn));
+	memset(low,-1,sizeof(low));
+	memset(fa,-1,sizeof(fa));
+	memset(is_cut,false,sizeof(is_cut));
+}
+void Tarjan(int u,int father){
+	fa[u] = father;
+	dfn[u] = low[u] = (++tim);
+	int size = g[u].size();
+	for(int i = 0;i <= size-1;++i){
+		int v = g[u][i];
+		if(dfn[v] == -1){
+			Tarjan(v,u);
+			low[u] = min(low[v],low[u]);
+		}else if(v != father){/*假如v是u的父亲的话，那么这就是无向边中的重边，有重边那么一定不是桥*/
+			low[u] = min(low[u],dfn[v]);//dfn[v]可能！=low[v]，所以不能用low[v]代替dfn[v],否则会上翻过头了。
+		}
+	}
+}
+void count(){
+	int rootson = 0;
+	Tarjan(1,0);
+	for(int i = 2;i <= n;++i){
+		int v = fa[i];
+		if(v == 1){/*统计根节点子树的个数，根节点的子树个数>=2,就是割点*/
+			++rootson;
+		}else{
+			if(low[i] >= dfn[v]){//割点的条件 
+				is_cut[v] = true;
+			}
+		}
+	}
+	if(rootson > 1){
+		is_cut[1] = true;
+	}
+	for(int i = 1;i <= n;++i){
+		if(is_cut[i]){
+			printf("%d\n",i);
+		}
+	}
+	
+	for(int i = 1;i <= n;++i){
+		int v = fa[i];
+		if(v > 0 && low[i] > dfn[v]){//桥（割边）的条件 
+			printf("%d %d\n",v,i);
+		}
+	}
+}
+int main(){
+	while(~scanf("%d %d",&n,&m)){
+		init();
+		for(int i = 1;i <= m;++i){
+			int x = 0,y = 0;
+			scanf("%d %d",&x,&y);
+			g[x].push_back(y);g[y].push_back(x);
+		}
+		count();
+	}	
+	
+	
+	return 0;
+}
