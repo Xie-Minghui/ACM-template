@@ -1,0 +1,50 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int maxn = 2e5;
+int m = 0,n = 0;
+vector<int> g[maxn+10];  
+bool vis[maxn+10];
+int low[maxn+10],dfn[maxn+10];
+int cnt = 0,dig = 0;
+//这里是tarjan代码模板核心
+void tarjan(int u,int w){
+    vis[u] = true;
+    dfn[u] = low[u] = (++cnt);
+    int size = g[u].size();
+    for(int i = 0;i < size;++i){
+        int v = g[u][i];
+        if(v == w){//因为是无向图，防止向后返回去遍历
+            continue;
+        }
+        if(dfn[v] == -1){//没有遍历过，就接着向下遍历，直到找到后，再执行下面的代码，也就是回溯
+            tarjan(v,u);
+            low[u] = min(low[u],low[v]);
+        }else{
+        	low[u] = min(low[u],dfn[v]); 
+		}
+    }
+    if(low[u] == dfn[u]){//这个用来求割边的个数，但是无法求割边具体是什么 
+        ++dig;//求有几个强连通分支，那么割边的数量等于强连通分支数量-1 
+    }
+}
+void init(){//初始化函数
+    memset(vis,false,sizeof(vis));
+    memset(low,0,sizeof(low));
+    memset(dfn,-1,sizeof(dfn));
+}
+ 
+int main(){
+    std::ios::sync_with_stdio(false);
+    cin.tie(0);cout.tie(0);
+    cin >> n >> m;
+    init();
+    for(int i = 1;i <= m;++i){
+        int x = 0,y = 0;
+        cin >> x >> y;
+        g[x].push_back(y);g[y].push_back(x);
+    }
+    tarjan(1,-1);
+    cout << dig-1 << endl;//割边的数量 
+     
+    return 0;
+}
