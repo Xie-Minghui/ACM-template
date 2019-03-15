@@ -79,7 +79,14 @@ void init(){
 	memset(sum,0,sizeof(sum));
 	memset(out,0,sizeof(out));//初始化为0，不能是-1 
 }
-void Tarjan(int u){
+void Tarjan(int u){//有向图，无向图在输入时，两边pusu_back,还有就是判断条件（父节点）不能倒退 
+/*
+相对于另外一个没有缩点的template，这里的fa存储的是该所处强连通分量的编号.
+如果要求具体的割点和割边，则还要一个数组记录每个点的父节点 ,然后利用割点和割边的条件判定
+割点：low[v] >= dfn[u]:v是u的子所有节点，可以相反考虑，也就是low[v] < dfn[u]则u不是割点
+割边：low[v] > dfn[u]:v是u的子所有节点，可以相反考虑，也就是low[v] < dfn[u]则u不是割边，
+	当Low[v] = dfn[u]表示v是在以u为根节点的强联通分量，删去强连通分量的一条边，无影响 
+*/
 	dfn[u] = low[u] = (++tim);
 	int size = g[u].size();
 	stac[++loc] = u;//模拟栈 
@@ -88,12 +95,12 @@ void Tarjan(int u){
 		if(dfn[v] == -1){
 			Tarjan(v);
 			low[u] = min(low[u],low[v]);
-		}else if(fa[v] == -1){//该点还不属于一个已知的（最大）强连通分量 
+		}else if(fa[v] == -1){//该点还不属于一个已知的（最大）强连通分量 ，无向图判断不一样 
 			low[u] = min(low[u],dfn[v]);
 		}
 	}
-	if(dfn[u] == low[u]){//将统一个强连通分量的点缩点，最大强连通子图都会被压缩成一个点 
-		int len = loc;
+	if(dfn[u] == low[u]){//将同一个强连通分量的点缩点，最大强连通子图都会被压缩成一个点 
+		int len = loc;// 强连通分量的点的编号不是统一的，而是一个小的强连通图一个标号 
 		++cnt;
 		while(stac[loc] != u){
 			fa[stac[loc--]] = cnt;//出栈 
