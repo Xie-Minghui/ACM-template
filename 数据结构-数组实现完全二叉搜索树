@@ -1,0 +1,62 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int maxn = 1e5;
+#define INF 0x3f3f3f3f
+#define per(i,a,b) for(int i = (a);i <= (b);++i)
+#define rep(i,a,b) for(int i = (a);i >= (b);--i)
+typedef long long LL;
+int n = 0;
+int a[maxn+10];
+void bt(int val,int root){//建树 
+	if(a[root] == -INF){
+		a[root] = val;
+	}else if(val >= a[root]){//等于要放在大于的那一边 
+		bt(val,2*root);
+	}else{
+		bt(val,2*root+1);
+	}
+}
+void bfs(int root){//层次遍历 
+	queue<int> que;
+	que.push(root);
+	int cnt = 1;
+	bool flag = true;
+	while(!que.empty()){
+		int s = que.front();
+		que.pop();
+		printf("%d%c",a[s],cnt == n ? '\n' : ' ');
+		++cnt;
+		if(a[2*s] != -INF){
+			que.push(2*s);
+			if(2*s > n){//完全二叉树节点的下标一定<=n,这与满二叉树不一样。
+			//不要直接正面思考条件（分类讨论，复杂易错），而要转化一下 
+				flag = false;
+			}
+		}
+		if(a[2*s+1] != -INF){
+			que.push(2*s+1);
+			if(2*s+1 > n){
+				flag = false;
+			}
+		}
+	}
+	if(flag == true){
+		printf("YES");
+	}else{
+		printf("NO");
+	}
+}
+int main(){
+	scanf("%d",&n);
+	for(int i = 1;i <= 100*n;++i){
+		a[i] = -INF;
+	}
+	per(i,1,n){
+		int x = 0;
+		scanf("%d",&x);
+		bt(x,1);
+	}
+	bfs(1);
+	
+	return 0;
+}
