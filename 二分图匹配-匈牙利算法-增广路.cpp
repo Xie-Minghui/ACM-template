@@ -2,18 +2,18 @@
 using namespace std;
 typedef long long LL;
 const int maxn = 1e4;
-int edge[maxn+10][maxn+10];//±ßµÄÁÚ½Ó¾ØÕó 
-bool vis[maxn+10];//·ÃÎÊÊı×é 
-int cx[maxn+10],cy[maxn+10];//¼ÇÂ¼x¼¯ºÏÖĞÆ¥ÅäµÄy¼¯ºÏµÄÔªËØ 
-int nx = 0,ny = 0,t = 0;//x¼¯ºÏÖĞµÄÔªËØ 
+int edge[maxn+10][maxn+10];//è¾¹çš„é‚»æ¥çŸ©é˜µ 
+bool vis[maxn+10];//è®¿é—®æ•°ç»„ 
+int cx[maxn+10],cy[maxn+10];//è®°å½•xé›†åˆä¸­åŒ¹é…çš„yé›†åˆçš„å…ƒç´  
+int nx = 0,ny = 0,t = 0;//xé›†åˆä¸­çš„å…ƒç´  
 
 int path(int u){
-	for(int i = 1;i <= nx;++i){
-		if(vis[i] == false && edge[u][i] == 1){//Ã»ÓĞ·ÃÎÊ£¬²¢ÇÒÓĞ±ßÏàÁ¬ 
+	for(int i = 1;i <= ny;++i){
+		if(vis[i] == false && edge[u][i] == 1){//æ²¡æœ‰è®¿é—®ï¼Œå¹¶ä¸”æœ‰è¾¹ç›¸è¿ 
 			vis[i] = true;
-			if(cy[i] == -1 || path(cy[i])){//Èç¹ûy¼¯ºÏÖĞµÄiÃ»ÓĞÆ¥Åä£¬»òÕßiÒÑ¾­Æ¥Åä
-			//µ«ÊÇ¿ÉÒÔ´Ócy[i]ÖĞ¿ÉÒÔÕÒµ½Ò»ÌõÔö¹ãÂ· 
-				cx[u] = i;cy[i] = u;//ÕÒµ½Ôö¹ãÂ·£¬ĞŞ¸ÄÆ¥Åä 
+			if(cy[i] == -1 || path(cy[i])){//å¦‚æœyé›†åˆä¸­çš„iæ²¡æœ‰åŒ¹é…ï¼Œæˆ–è€…iå·²ç»åŒ¹é…
+			//ä½†æ˜¯å¯ä»¥ä»cy[i]ä¸­å¯ä»¥æ‰¾åˆ°ä¸€æ¡å¢å¹¿è·¯ 
+				cx[u] = i;cy[i] = u;//æ‰¾åˆ°å¢å¹¿è·¯ï¼Œä¿®æ”¹åŒ¹é… 
 				return 1;
 			}
 		}
@@ -22,10 +22,10 @@ int path(int u){
 }
 int max_match(){
 	int sum = 0;
-	memset(cx,-1,sizeof(cx));memset(cy,-1,sizeof(cy));//³õÊ¼»¯-1£¬±íÊ¾¶¼Ã»ÓĞÆ¥Åä 
+	memset(cx,-1,sizeof(cx));memset(cy,-1,sizeof(cy));//åˆå§‹åŒ–-1ï¼Œè¡¨ç¤ºéƒ½æ²¡æœ‰åŒ¹é… 
 	for(int i = 1;i <= nx;++i){
-		if(cx[i] == -1){//Ã»ÓĞÆ¥ÅäÊ±£¬Ö´ĞĞpath´úÂë 
-			memset(vis,false,sizeof(vis));//ÖØÖÃ±ê¼ÇÎªÎ´·ÃÎÊ 
+		if(cx[i] == -1){//æ²¡æœ‰åŒ¹é…æ—¶ï¼Œæ‰§è¡Œpathä»£ç  
+			memset(vis,false,sizeof(vis));//é‡ç½®æ ‡è®°ä¸ºæœªè®¿é—® 
 			sum += path(i);
 		}
 	}
