@@ -1,0 +1,99 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define per(i,a,b) for(int i = (a);i <= (b);++i)
+const int maxn = 500 + 10;
+int udir[maxn];
+int in[maxn],out[maxn];
+int n = 0,m = 0;
+int rak[maxn],fa[maxn];
+void init(){
+	per(i,1,n){
+		udir[i] = in[i] = out[i] = 0;
+	}
+	per(i,1,n){
+		rak[i] = 0; fa[i] = i;
+	}
+}
+void solve(){
+	int cnt1 = 0,cnt2 = 0;
+	vector<int> ans;
+	per(i,1,n){
+		if(udir[i]&1){
+			++cnt1;
+		}
+		if(in[i] != out[i]){
+			++cnt2;
+			ans.push_back(i);
+		}
+	}
+	if(cnt1 == 2 || cnt1 == 0){
+		printf("Yes ");
+	}else{
+		printf("No ");
+	}
+	if(cnt2 == 0){
+		printf("Yes\n");
+	}else if(cnt2 == 2){
+		if((in[ans[0]] - out[ans[0]] == 1 && out[ans[1]] - in[ans[1]] == 1) || 
+			(in[ans[1]] - out[ans[1]] == 1 && out[ans[0]] - in[ans[0]] == 1)){
+			printf("Yes\n");
+		}else{
+			printf("No\n");
+		}
+	}else{
+		printf("No\n");
+	}
+	return ;
+}
+int find(int x){
+	if(x == fa[x]){
+		return x;
+	}else{
+		return fa[x] = find(fa[x]);
+	}
+}
+void unit(int x,int y){
+	x = find(x); y = find(y);
+	if(x == y){
+		return ;
+	}
+	if(rak[x] < rak[y]){
+		fa[x] = y;
+	}else{
+		if(rak[x] == rak[y]){
+			fa[y] = x;
+			++rak[x];
+		}else{
+			fa[y] = x;
+		}
+	}
+}
+int main(){
+	int T = 0;
+	scanf("%d",&T);
+	while(T--){
+		scanf("%d %d",&n,&m);
+		init();
+		per(i,1,m){
+			int x = 0,y = 0;
+			scanf("%d %d",&x,&y);
+			++udir[x]; ++udir[y];
+			++out[x]; ++in[y];
+			unit(x,y);
+		}
+		per(i,1,n){//最后要路径压缩一遍（压缩成只有一个父节点），否则下面的判断不成立
+			find(i);//这里坑了我好几次了
+		}
+		set<int> st;
+		per(i,1,n){
+			st.insert(fa[i]);
+		}
+		if(st.size() > 1){
+			printf("No No\n");
+			continue;
+		}
+		solve();
+	}
+
+	return 0;
+}
