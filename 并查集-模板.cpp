@@ -7,10 +7,10 @@
 using namespace std;
 const int maxn = 10000 + 10;
 
-int par[maxn];//���� 
-int rak[maxn];//���ĸ߶� 
+int par[maxn];//父亲 
+int rak[maxn];//树的高度 
 int n = 0;
-//��ʼ��n��Ԫ�� 
+//初始化n个元素 
 void init(){
 	for(int i = 1;i <= n;++i){
 		par[i] = i;
@@ -18,7 +18,7 @@ void init(){
 	}
 }
 
-//��ѯ���ĸ� 
+//查询树的根 
 int find(int x){
 	if(par[x] == x){
 		return x;
@@ -27,7 +27,7 @@ int find(int x){
 	}
 }
 
-//�ϲ�x��y�����ļ��� 
+//合并x和y所属的集合 
 void unite(int x,int y){
 	x = find(x),y = find(y);
 	if(x == y){
@@ -43,15 +43,16 @@ void unite(int x,int y){
 	}
 }
 
-//�ж�x��y�Ƿ�����ͬһ������ 
+//判断x和y是否属于同一个集合 
 bool same(int x,int y){
 	return find(x) == find(y);
 }
 
 int main(){
-	
-	
-	
+	per(i,1,n){//最后要路径压缩一遍（压缩成只有一个父节点），否则下面的判断不成立
+		find(i);//这里坑了我好几次了
+	}
+	//下面判断联通的时候所有节点只能有一个父节点，这样才是对的
 	
 	return 0;
 }
