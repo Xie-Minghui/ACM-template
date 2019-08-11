@@ -51,6 +51,7 @@ void init(){
     memset(rc,0,sizeof(rc));
     memset(s,0,sizeof(s));
 }
+
 int main(){
     R n,m,i,l,r,sz;
     string s1 = "000001",s2 = " 001010";
