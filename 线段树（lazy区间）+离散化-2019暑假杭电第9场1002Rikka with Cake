@@ -1,0 +1,164 @@
+#include<bits/stdc++.h>
+#define per(i,a,b) for(int i = (a);i <= (b);++i)
+#define rep(i,a,b) for(int i = (a);i >= (b);--i)
+#define INF 1e18
+using namespace std;
+#define INF 1e18
+using namespace std;
+typedef long long LL;
+const int maxn = 1e5 + 10;
+inline int gi(){//这个快速读的模板比上面快，估计是没有调用某些函数
+    char a=getchar();int b=0;
+    while(a<'0'||a>'9')a=getchar();
+    while(a>='0'&&a<='9')b=b*10+a-'0',a=getchar();
+    return b;
+}
+int n = 0,m = 0,k = 0;
+struct node{
+    int x,y;
+    char dir;
+}a[maxn];
+int nx = 0,ny = 0;
+int xx[maxn],yy[maxn];
+struct Tree{
+    int l,r;
+    LL val;
+    LL add_mark;
+}tree[maxn<<2];
+bool cmpx(node p1,node p2){
+    return p1.x == p2.x ? p1.y < p2.y : p1.x < p2.x;
+}
+
+void push_up(int rt){
+    tree[rt].val = tree[rt<<1].val + tree[rt<<1|1].val;
+}
+void push_down(int rt){//lazy懒惰标记，向下传递
+    if(tree[rt].add_mark != 0){
+        int len = tree[rt].r - tree[rt].l + 1;
+
+        tree[rt<<1].add_mark += tree[rt].add_mark;
+        tree[rt<<1|1].add_mark += tree[rt].add_mark;
+
+        tree[rt<<1].val += 1ll*tree[rt].add_mark * (len-(len>>1));
+        tree[rt<<1|1].val += 1ll*tree[rt].add_mark * (len>>1);
+
+        tree[rt].add_mark = 0; 
+    }
+}
+void build(int rt,int l,int r){
+    tree[rt].l = l; tree[rt].r = r; tree[rt].val = 0;
+    tree[rt].add_mark = 0;
+    if(l == r){
+        return ;
+    }
+    int mid = (l + r) >> 1;
+    build(rt<<1,l,mid);
+    build(rt<<1|1,mid+1,r);
+}
+void update(int rt,int L,int R,int add_val){
+
+    if(L <= tree[rt].l && tree[rt].r <= R){//区间被包含，直接更新，并且使用lazy标记
+        tree[rt].val += 1ll*add_val * (tree[rt].r - tree[rt].l + 1);
+        tree[rt].add_mark += add_val;
+        return ;
+    }
+    push_down(rt);//lazy懒惰标记，向下传递
+    // if(tree[rt].l > R || tree[rt].r < L){//不相交
+    //     return ;
+    // }//其实这种情况不存在，因为最开始是整个区间，必定包含，后面不包含的区间根本就不会递归到
+    int mid = (tree[rt].l + tree[rt].r) >> 1;
+    if(L <= mid){
+        update(rt<<1,L,R,add_val);
+    }
+    if(R > mid){
+        update(rt<<1|1,L,R,add_val);
+    }
+    push_up(rt);//向上更新                                         
+    return ;
+}
+LL query(int rt,int pos){
+    if(tree[rt].l == tree[rt].r){
+        return tree[rt].val; 
+    }
+    push_down(rt);//lazy懒惰标记，向下传递
+
+    int mid = (tree[rt].l + tree[rt].r) >> 1;
+    if(pos <= mid){
+        return query(rt<<1,pos);
+    }else{  
+        return query(rt<<1|1,pos);
+    }
+}
+LL query2(int rt,int ql,int qr){//区间查询
+    if(ql <= tree[rt].l && tree[rt].r <= qr){//区间查询
+        //要离散化区间对应好，才能得到正确答案
+        return tree[rt].val;
+    }
+    push_down(rt);
+    int mid = (tree[rt].l + tree[rt].r) >> 1;
+    LL ans = 0;
+    if(ql <= mid){
+        ans += query2(rt<<1,ql,qr);
+    }
+    if(qr > mid){
+        ans += query2(rt<<1|1,ql,qr);
+    }
+    return ans;
+}
+
+void solve(){
+   
+    sort(a+1,a+1+k,cmpx);//按照x从小到大的顺序排序，就可以屏蔽掉后面的信息
+    LL ans = 0;
+    build(1,1,ny);
+    per(i,1,k){//跑左边的
+        if(a[i].dir == 'U'){
+            update(1,a[i].y,ny,1ll);
+        }
+        if(a[i].dir == 'D'){
+            update(1,1,a[i].y,1ll);
+        }
+        if(a[i].dir == 'L'){
+            ans += query(1,a[i].y);
+            // ans += query2(1,a[i].y,a[i].y);
+        }
+    }
+    build(1,1,ny);
+    rep(i,k,1){//跑右边
+        if(a[i].dir == 'U'){
+            update(1,a[i].y,ny,1);
+        }
+        if(a[i].dir == 'D'){
+            update(1,1,a[i].y,1);
+        }
+        if(a[i].dir == 'R'){
+            ans += query(1,a[i].y);
+            // ans += query2(1,a[i].y,a[i].y);
+        }
+    }
+    printf("%lld\n",ans + 1);
+}
+int main(){
+
+    int T = 0;
+    scanf("%d",&T);
+    while(T--){
+        scanf("%d %d %d",&n,&m,&k);
+        // n = gi(); m = gi(); k = gi();
+        per(i,1,k){
+            scanf("%d %d %c",&a[i].x,&a[i].y,&a[i].dir);
+            // a[i].x = gi(); a[i].y = gi(); scanf("%c",&a[i].dir);
+            xx[i] = a[i].x; yy[i] = a[i].y; 
+        }   
+        sort(xx+1,xx+1+k);//离散化
+        nx = unique(xx+1,xx+1+k) - xx - 1;
+        sort(yy+1,yy+1+k);
+        ny = unique(yy+1,yy+1+k) - yy - 1;//因为是从1开始的所以这里要-1，才能和区间查询一致
+        per(i,1,k){
+            a[i].x = lower_bound(xx+1,xx+1+nx,a[i].x) - xx;
+            a[i].y = lower_bound(yy+1,yy+1+ny,a[i].y) - yy;
+        }                                                          
+        solve();
+    }
+    return 0;
+}
