@@ -1,0 +1,64 @@
+#include<bits/stdc++.h>
+#define per(i,a,b) for(int i=(a);i<=(b);++i)
+#define rep(i,a,b) for(int i=(a);i>=(b);--i)
+using namespace std;
+typedef long long LL;
+const int maxn = 300+10;
+const int ma = 75000;
+int a[maxn];
+int pre[maxn];
+int n = 0;
+int dp[310][ma+10];
+//dp[i][j]:排序后的序列,只是用从第i个到n个数从何为J的方案书2，背包问题。
+int S = 0;
+const int mod = 1e9 + 7;
+void init(){
+	S = 0;
+	per(i,0,n+1){
+		per(j,0,ma){
+			dp[i][j] = 0;
+		}
+	}
+}
+void solve(){
+	rep(i,n+1,1){
+		dp[i][0] = 1;
+		rep(j,ma,1){
+			if(j >= a[i]){
+				dp[i][j] = (dp[i+1][j] + dp[i+1][j-a[i]]) % mod;
+			}else{
+				dp[i][j] = dp[i+1][j]; 
+			}
+		}
+	}
+	int ans = 0;
+	per(i,1,n){//枚举最小值
+		if(pre[i-1] > (S-1)/2){
+			break;
+		}
+		per(j,(S-2*a[i]+1)/2,(S-a[i])/2){//除了最小值，剩下的取出的集合的范围
+			ans = (ans + dp[i+1][j]) % mod;
+		}
+	}
+	printf("%d\n",ans);
+}
+int main(){
+	int T = 0;
+	scanf("%d",&T);
+	while(T--){
+		init();
+		scanf("%d",&n);
+		per(i,1,n){
+			scanf("%d",&a[i]);
+			S += a[i];
+			// pre[i] = pre[i-1] + a[i];//这里的a[i]没有排序
+		}
+		sort(a+1,a+1+n);
+		per(i,1,n){
+			pre[i] = pre[i-1] + a[i];//排序之后的前缀和
+		}
+		solve();
+	}
+
+	return 0;
+}
