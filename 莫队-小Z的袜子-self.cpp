@@ -10,9 +10,9 @@ using namespace std;
 const int maxn = 5e4;
 typedef long long LL;
 
-int pos[maxn+10];//´æ´¢Çø¼ä×ó¶ËµãµÄ¿éµÄid
-int cnt[maxn+10];//map´æ´¢i³öÏÖµÄ¸öÊı
-int a[maxn+10];//´æ´¢Ô­Ê¼Êı¾İ
+int pos[maxn+10];//å­˜å‚¨åŒºé—´å·¦ç«¯ç‚¹çš„å—çš„id
+int cnt[maxn+10];//mapå­˜å‚¨iå‡ºç°çš„ä¸ªæ•°
+int a[maxn+10];//å­˜å‚¨åŸå§‹æ•°æ®
 int n = 0,m = 0,block = 0;
 LL gcd(LL x,LL y){
 	return (y == 0 ? x : gcd(y,x % y));
@@ -25,7 +25,7 @@ struct Query{
         return pos[R.l]<pos[T.l] || (pos[R.l]==pos[T.l] && R.r<T.r);
     }
     /*
-	bool operator < (const Query& rhs){//µÚÒ»¹Ø¼ü×Ö£º×ó¶ËµãµÄ¿éid,µÚ¶ş¹Ø¼ü×Ö£ºÓÒ¶Ëµã 
+	bool operator < (const Query& rhs){//ç¬¬ä¸€å…³é”®å­—ï¼šå·¦ç«¯ç‚¹çš„å—id,ç¬¬äºŒå…³é”®å­—ï¼šå³ç«¯ç‚¹ 
 		return (pos[l] == pos[rhs.l] ? r < rhs.r : pos[l] < pos[rhs.l]);
 	}
 	*/
@@ -49,7 +49,7 @@ void init(){
 		scanf("%d",&a[i]);
 	}
 	block = (int)sqrt(n+0.5);
-	per(i,1,n){//·Ö¿éµÄ±àºÅ 
+	per(i,1,n){//åˆ†å—çš„ç¼–å· 
 		pos[i] = (i-1)/block + 1;
 	}
 	
