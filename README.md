@@ -1,2 +1,2 @@
 # ACM-template
-This file contains ACM algorithm template which I like to use
+这个仓库包含我我自己使用的代码模板。里面的代码我都有详细的注释和自己的理解。
